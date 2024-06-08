@@ -20,7 +20,7 @@ PHP 5.6
 ODBC mariadb driver updated to self compiled version instead of using the deprecated mysql driver
 Not working:
 FOP - automatic intallation script can't find the proper package.
-Example docker-compose.yaml (change tag to 18.15-alpha instead of 17.15-latest, if you want Asterisk 18 instead of Asterisk 17)
+Example docker-compose.yaml
 
 ```
 version: '2'
