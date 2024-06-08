@@ -1,0 +1,23 @@
+name: Release, build and publish FreePBX server Images
+on:
+  workflow_dispatch:
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+    inputs:
+      tag:
+        description: Tag name to build and publish
+        type: string
+        required: true
+    
+jobs:
+  tag-and-publish:
+    uses: sjexpos/gh-actions/.github/workflows/tag-and-publish.yaml@main
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    with:
+      image_name: sjexpos/freepbx
+      tag: ${{ inputs.tag }}

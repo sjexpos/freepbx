@@ -1,16 +1,13 @@
+# FreePBX 15, Asterisk 17 on Docker
 
-[![GitHub release](https://img.shields.io/github/release/sjexpos/docker-freepbx.svg?style=plastic)](https://github.com/sjexpos/docker-freepbx/releases/latest)
-[![CI workflow](https://img.shields.io/github/actions/workflow/status/sjexpos/docker-freepbx/ci.yaml?branch=main&label=ci&logo=github&style=plastic)](https://github.com/sjexpos/docker-freepbx/actions?workflow=ci)
-[![Codecov](https://img.shields.io/codecov/c/github/sjexpos/docker-freepbx?logo=codecov&style=plastic)](https://codecov.io/gh/sjexpos/docker-freepbx)
-![Commits](https://img.shields.io/github/last-commit/sjexpos/docker-freepbx?logo=github&style=plastic)
+[![GitHub release](https://img.shields.io/github/release/sjexpos/freepbx.svg?style=plastic)](https://github.com/sjexpos/freepbx/releases/latest)
+[![Publish workflow](https://img.shields.io/github/actions/workflow/status/sjexpos/freepbx/publish.yaml?branch=main&label=publish&logo=github&style=plastic)](https://github.com/sjexpos/freepbx/actions?workflow=publish)
+[![Codecov](https://img.shields.io/codecov/c/github/sjexpos/freepbx?logo=codecov&style=plastic)](https://codecov.io/gh/sjexpos/freepbx)
+![Last commit](https://img.shields.io/github/last-commit/sjexpos/freepbx?logo=github&style=plastic)
 
 [![Docker pulls](https://img.shields.io/docker/pulls/sjexpos/freepbx?logo=docker&style=plastic)](https://hub.docker.com/r/sjexpos/freepbx)
 ![Docker size](https://img.shields.io/docker/image-size/sjexpos/freepbx?logo=docker&style=plastic)
 
-
-
-
-# FreePBX 15, Asterisk 17/18 on Docker (Raspberry Pi). 
 
 Properly working with IVR and call forwarding to an extension on a arm64 or x86_64.
 
@@ -21,7 +18,6 @@ Asterisk 17.9.3
 FreePBX 15.0.16.56
 PHP 5.6
 ODBC mariadb driver updated to self compiled version instead of using the deprecated mysql driver
-XMPP is now installing and the daemon is running after integrating an armv7 mongodb supported version and tweeking some startup scripts
 Not working:
 FOP - automatic intallation script can't find the proper package.
 Example docker-compose.yaml (change tag to 18.15-alpha instead of 17.15-latest, if you want Asterisk 18 instead of Asterisk 17)
