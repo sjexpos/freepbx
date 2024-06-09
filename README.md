@@ -3,10 +3,10 @@
 [![GitHub release](https://img.shields.io/github/release/sjexpos/freepbx.svg?style=plastic)](https://github.com/sjexpos/freepbx/releases/latest)
 [![Publish workflow](https://img.shields.io/github/actions/workflow/status/sjexpos/freepbx/publish.yaml?branch=main&label=publish&logo=github&style=plastic)](https://github.com/sjexpos/freepbx/actions?workflow=publish)
 [![Codecov](https://img.shields.io/codecov/c/github/sjexpos/freepbx?logo=codecov&style=plastic)](https://codecov.io/gh/sjexpos/freepbx)
-![Last commit](https://img.shields.io/github/last-commit/sjexpos/freepbx?logo=github&style=plastic)
+[![Last commit](https://img.shields.io/github/last-commit/sjexpos/freepbx?logo=github&style=plastic)](https://github.com/sjexpos/freepbx/commits/)
 
 [![Docker pulls](https://img.shields.io/docker/pulls/sjexpos/freepbx?logo=docker&style=plastic)](https://hub.docker.com/r/sjexpos/freepbx)
-![Docker size](https://img.shields.io/docker/image-size/sjexpos/freepbx?logo=docker&style=plastic)
+[![Docker size](https://img.shields.io/docker/image-size/sjexpos/freepbx?logo=docker&style=plastic)](https://hub.docker.com/r/sjexpos/freepbx/tags)
 
 
 Properly working with IVR and call forwarding to an extension on a arm64 or x86_64.
