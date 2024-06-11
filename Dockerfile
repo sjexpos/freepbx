@@ -221,6 +221,8 @@ ENV ZABBIX_VERSION=5.2 \
     G72X_VERSION=0.1 \
     PHP_VERSION=5.6 \
     SPANDSP_VERSION=20180108 \
+    HTTP_PORT=8080 \
+    HTTPS_PORT=8443 \
     RTP_START=18000 \
     RTP_FINISH=20000
 
@@ -468,10 +470,18 @@ RUN sed -i -e "s/memory_limit = 128M/memory_limit = 256M/g" /etc/php/${PHP_VERSI
     rm -rf /etc/asterisk && \
     ln -s /data/etc/asterisk /etc/asterisk
 
+RUN sed -i -e "s/<VirtualHost *:80>/<VirtualHost *:$HTTP_PORT>/g" /etc/apache2/sites-available/000-default.conf && \
+    sed -i -e "s/<VirtualHost *:443>/<VirtualHost *:$HTTPS_PORT>/g" /etc/apache2/sites-available/000-default.conf && \
+    sed -i -e "s/Listen 80/Listen $HTTP_PORT/g" /etc/apache2/ports.conf && \
+    sed -i -e "s/Listen 443/Listen $HTTPS_PORT/g" /etc/apache2/ports.conf && \
+    sed -i -e "s/<VirtualHost _default_:443>/<VirtualHost _default_:$HTTPS_PORT>/g" /etc/apache2/sites-available/default-ssl.conf
+
 ADD freepbx-15/install /
 
 ### Networking configuration
-EXPOSE 80 443 4445 4569 5060/udp 5160/udp 5061 5161 8001 8003 8008 8009 8025 ${RTP_START}-${RTP_FINISH}/udp 1025 8025 10050/TCP
+EXPOSE ${HTTP_PORT} ${HTTPS_PORT} 4445 4569 5060/udp 5160/udp 5061 5161 8001 8003 8008 8009 8025 ${RTP_START}-${RTP_FINISH}/udp 1025 8025 10050/TCP
+
+### ${HTTP_PORT} ${HTTPS_PORT} 8001 8003 10050
 
 ### Entrypoint configuration
 ENTRYPOINT ["/init"]
