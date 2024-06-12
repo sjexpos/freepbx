@@ -47,6 +47,7 @@ libtool-bin
 libunbound-dev
 liburiparser-dev
 libvorbis-dev
+libvpb-dev
 libxml2-dev
 libxslt1-dev
 linux-headers*

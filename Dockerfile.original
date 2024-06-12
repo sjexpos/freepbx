@@ -229,6 +229,10 @@ RUN apt-get install --no-install-recommends -y \
 ### Usbutils addon
 RUN apt-get install -y usbutils unzip autoconf automake cmake gcc
 
+### Add users
+RUN addgroup --gid 2600 asterisk && \
+    adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk
+
 ### Build MardiaDB connector
 RUN cd /usr/src && \
     git clone https://github.com/MariaDB/mariadb-connector-odbc.git && \
@@ -247,10 +251,6 @@ RUN mkdir -p /usr/src/spandsp && \
     ./configure --prefix=/usr && \
     make && \
     make install
-
-### Add users
-RUN addgroup --gid 2600 asterisk && \
-    adduser --uid 2600 --gid 2600 --gecos "Asterisk User" --disabled-password asterisk
 
 ### Build Asterisk
 RUN cd /usr/src && \
@@ -321,7 +321,7 @@ RUN mkdir -p /usr/src/asterisk-g72x && \
     curl https://bitbucket.org/arkadi/asterisk-g72x/get/master.tar.gz | tar xvfz - --strip 1 -C /usr/src/asterisk-g72x && \
     cd /usr/src/asterisk-g72x && \
     ./autogen.sh && \
-    ./configure --prefix=/usr --with-bcg729 && \
+    ./configure --prefix=/usr --with-bcg729 --enable-$G72X_CPUHOST && \
 #    ./configure CFLAGS='-march=armv7' --prefix=/usr --with-bcg729 --enable-$G72X_CPUHOST && \
     make && \
     make install
