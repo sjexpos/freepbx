@@ -1,4 +1,4 @@
-FROM debian:buster AS builder
+FROM debian:bullseye AS builder
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
@@ -45,16 +45,16 @@ RUN set -x && \
 ### Pin libxml2 packages to Debian repositories
 RUN c_rehash && \
     echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
-    echo "Pin: release o=Debian,n=buster" >> /etc/apt/preferences.d/libxml2 && \
+    echo "Pin: release o=Debian,n=bullseye" >> /etc/apt/preferences.d/libxml2 && \
     echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libxml2 && \
     APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=TRUE && \
     \
 ### Install dependencies
     set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
-    echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
-    echo "deb http://ftp.us.debian.org/debian/ buster main" > /etc/apt/sources.list.d/backports.list && \
-    echo "deb-src http://ftp.us.debian.org/debian/ buster main" >> /etc/apt/sources.list.d/backports.list && \
+    echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/deb.sury.org.list && \
+    echo "deb http://ftp.us.debian.org/debian/ bullseye main" > /etc/apt/sources.list.d/backports.list && \
+    echo "deb-src http://ftp.us.debian.org/debian/ bullseye main" >> /etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y
 
@@ -65,10 +65,10 @@ ADD asterisk_runtime_deps /usr/src/
 RUN cat /usr/src/asterisk_runtime_deps | sed 's/\${PHP_VERSION}/${PHP_VERSION}/g'
 
 ### Install development dependencies
-RUN apt-get install --no-install-recommends -y `cat /usr/src/asterisk_build_deps`
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y `cat /usr/src/asterisk_build_deps`
 
 ### Install runtime dependencies
-RUN apt-get install --no-install-recommends -y `cat /usr/src/asterisk_runtime_deps | sed 's/${PHP_VERSION}/'"$PHP_VERSION"'/g'`
+RUN DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y `cat /usr/src/asterisk_runtime_deps | sed 's/${PHP_VERSION}/'"$PHP_VERSION"'/g'`
 
 
 ### Usbutils addon
@@ -196,14 +196,14 @@ RUN git clone https://github.com/rusxakep/asterisk-chan-dongle /usr/src/asterisk
 
 
 
-FROM debian:buster AS runtime
+FROM debian:bullseye AS runtime
 
 ARG TARGETPLATFORM
 ARG TARGETARCH
 ARG TARGETVARIANT
     
 ### Set defaults
-ENV ZABBIX_VERSION=5.2 \
+ENV ZABBIX_VERSION=5.5 \
     S6_OVERLAY_VERSION=v2.1.0.2 \
     DEBUG_MODE=FALSE \
     TIMEZONE=Etc/GMT \
@@ -211,7 +211,7 @@ ENV ZABBIX_VERSION=5.2 \
     ENABLE_CRON=TRUE \
     ENABLE_SMTP=TRUE \
     ENABLE_ZABBIX=TRUE \
-    ZABBIX_HOSTNAME=debian.buster \
+    ZABBIX_HOSTNAME=debian.bullseye \
     ENABLE_CRON=FALSE \
     ENABLE_SMTP=FALSE \
     ASTERISK_VERSION=17.9.3 \
@@ -255,17 +255,17 @@ RUN set -x && \
     
 RUN if [ "$TARGETARCH" = "amd64" ] ; then \
         curl https://repo.zabbix.com/zabbix-official-repo.key | apt-key add - \
-        && echo "deb http://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/debian buster main" >>/etc/apt/sources.list \
-        && echo "deb-src http://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/debian buster main" >>/etc/apt/sources.list \
+        && echo "deb http://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/debian bullseye main" >>/etc/apt/sources.list \
+        && echo "deb-src http://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/debian bullseye main" >>/etc/apt/sources.list \
         && apt-get update -y \
         && apt-get install -y --no-install-recommends zabbix-release \
     ; else \
         curl https://repo.zabbix.com/zabbix-official-repo.key | apt-key add - \
-        && echo "deb https://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/raspbian buster main" >>/etc/apt/sources.list \
-        && echo "deb-src https://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/raspbian buster main" >>/etc/apt/sources.list \
+        && echo "deb https://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/raspbian bullseye main" >>/etc/apt/sources.list \
+        && echo "deb-src https://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/raspbian bullseye main" >>/etc/apt/sources.list \
         && apt-get update -y \
-        && wget https://repo.zabbix.com/zabbix/5.2/raspbian/pool/main/z/zabbix-release/zabbix-release_5.2-1+debian$(cut -d"." -f1 /etc/debian_version)_all.deb \
-        && dpkg -i zabbix-release_5.2-1+debian$(cut -d"." -f1 /etc/debian_version)_all.deb \
+        && wget https://repo.zabbix.com/zabbix/${ZABBIX_VERSION}/raspbian/pool/main/z/zabbix-release/zabbix-release_${ZABBIX_VERSION}-1+debian$(cut -d"." -f1 /etc/debian_version)_all.deb \
+        && dpkg -i zabbix-release_${ZABBIX_VERSION}-1+debian$(cut -d"." -f1 /etc/debian_version)_all.deb \
     ; fi
       
 RUN apt-get install -y --no-install-recommends zabbix-agent && \
@@ -298,8 +298,8 @@ RUN adduser --home /app --gecos "Node User" --disabled-password nodejs && \
 \
 ### Install NodeJS
     wget --no-check-certificate -qO - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
-    echo 'deb https://deb.nodesource.com/node_10.x buster main' > /etc/apt/sources.list.d/nodesource.list && \
-    echo 'deb-src https://deb.nodesource.com/node_10.x buster main' >> /etc/apt/sources.list.d/nodesource.list && \
+    echo 'deb https://deb.nodesource.com/node_10.x bullseye main' > /etc/apt/sources.list.d/nodesource.list && \
+    echo 'deb-src https://deb.nodesource.com/node_10.x bullseye main' >> /etc/apt/sources.list.d/nodesource.list && \
     apt-get update && \
     apt-get install -y \
             nodejs \
@@ -311,21 +311,21 @@ RUN adduser --home /app --gecos "Node User" --disabled-password nodejs && \
     rm -rf /var/lib/apt/lists/*
 
 ### Add folders
-ADD debian-buster/install /
+ADD debian-bullseye/install /
 
 ### Pin libxml2 packages to Debian repositories
 RUN c_rehash && \
     echo "Package: libxml2*" > /etc/apt/preferences.d/libxml2 && \
-    echo "Pin: release o=Debian,n=buster" >> /etc/apt/preferences.d/libxml2 && \
+    echo "Pin: release o=Debian,n=bullseye" >> /etc/apt/preferences.d/libxml2 && \
     echo "Pin-Priority: 501" >> /etc/apt/preferences.d/libxml2 && \
     APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=TRUE && \
     \
 ### Install dependencies
     set -x && \
     curl https://packages.sury.org/php/apt.gpg | apt-key add - && \
-    echo "deb https://packages.sury.org/php/ buster main" > /etc/apt/sources.list.d/deb.sury.org.list && \
-    echo "deb http://ftp.us.debian.org/debian/ buster main" > /etc/apt/sources.list.d/backports.list && \
-    echo "deb-src http://ftp.us.debian.org/debian/ buster main" >> /etc/apt/sources.list.d/backports.list && \
+    echo "deb https://packages.sury.org/php/ bullseye main" > /etc/apt/sources.list.d/deb.sury.org.list && \
+    echo "deb http://ftp.us.debian.org/debian/ bullseye main" > /etc/apt/sources.list.d/backports.list && \
+    echo "deb-src http://ftp.us.debian.org/debian/ bullseye main" >> /etc/apt/sources.list.d/backports.list && \
     apt-get update && \
     apt-get -o Dpkg::Options::="--force-confold" upgrade -y
 

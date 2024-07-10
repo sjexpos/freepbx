@@ -16,7 +16,7 @@ libcpg-dev
 libcurl4-openssl-dev
 libedit-dev
 libfftw3-dev
-libgmime-2.6-dev
+libgmime-3.0-dev
 libgsm1-dev
 libical-dev
 libiksemel-dev
@@ -24,7 +24,7 @@ libjansson-dev
 libldap2-dev
 liblua5.2-dev
 libmariadb-dev
-libmariadbclient-dev
+libmariadb-dev-compat 
 libmp3lame-dev
 libncurses5-dev
 libneon27-dev
